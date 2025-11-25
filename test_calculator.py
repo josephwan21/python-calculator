@@ -7,6 +7,7 @@ DEBUG = os.getenv('DEBUG_MODE', 'false').lower() == 'true'
 
 
 @pytest.mark.slow
+@pytest.mark.edge
 def test_add():
     """Test addition function."""
     assert add(2, 3) == 5
@@ -15,6 +16,7 @@ def test_add():
 
 
 @pytest.mark.slow
+@pytest.mark.edge
 def test_subtract():
     """Test subtraction function."""
     assert subtract(5, 3) == 2
@@ -23,6 +25,7 @@ def test_subtract():
 
 
 @pytest.mark.slow
+@pytest.mark.edge
 def test_multiply():
     """Test multiplication function."""
     assert multiply(3, 4) == 12
@@ -31,6 +34,7 @@ def test_multiply():
 
 
 @pytest.mark.slow
+@pytest.mark.edge
 def test_divide():
     """Test division function."""
     assert divide(8, 2) == 4
@@ -39,6 +43,7 @@ def test_divide():
 
 
 @pytest.mark.slow
+@pytest.mark.edge
 def test_divide_by_zero():
     """Test that dividing by zero raises an error."""
     with pytest.raises(ValueError):
@@ -46,6 +51,7 @@ def test_divide_by_zero():
 
 
 @pytest.mark.slow
+@pytest.mark.edge
 def test_power():
     assert power(2, 2) == 4
     assert power(3, 5) == 243
