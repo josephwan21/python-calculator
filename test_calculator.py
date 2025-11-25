@@ -1,5 +1,9 @@
 # test_calculator.py
 
+import os
+
+DEBUG = os.getenv('DEBUG_MODE', 'false').lower() == 'true'
+
 import pytest
 from calculator import add, subtract, multiply, divide, power
 
