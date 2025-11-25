@@ -5,8 +5,26 @@ on:
     branches: [ main ]
 
 jobs:
+  lint:
+    name: Code Linting
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install flake8
+        run: pip install flake8
+      
+      - name: Run linter
+        run: flake8 calculator.py test_calculator.py --max-line-length=100
   test:
     runs-on: ${{ matrix.os }}
+    needs: lint
     
     strategy:
       matrix:
@@ -45,3 +63,58 @@ jobs:
       
       - name: Run pytest
         run: pytest -v
+
+      - name: Run tests with coverage
+        run: pytest -v --cov=calculator --cov-report=term-missing
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: .coverage
+  
+  test-scenarios:
+    name: Test ${{ matrix.scenario }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        scenario:
+          - name: 'basic-operations'
+            marker: 'not slow'
+          - name: 'edge-cases'
+            marker: 'edge'
+          - name: 'performance'
+            marker: 'slow'
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest-benchmark
+      
+      - name: Run ${{ matrix.scenario.name }} tests
+        run: pytest -v -m "${{ matrix.scenario.marker }}"
+        
+  deploy:
+    name: Deploy to Production
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    if: |
+      github.ref == 'refs/heads/main' &&
+      github.event_name == 'push' &&
+      success()
+    
+    steps:
+      - name: Simulate deployment
+        run: |
+          echo "Deploying to production..."
+          echo "Environment: Production"
+          echo "Version: ${{ github.sha }}"
