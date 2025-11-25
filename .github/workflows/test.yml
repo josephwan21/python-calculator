@@ -81,7 +81,7 @@ jobs:
       matrix:
         scenario:
           - name: 'basic-operations'
-            marker: 'not slow'
+            marker: 'not_slow'
           - name: 'edge-cases'
             marker: 'edge'
           - name: 'performance'
@@ -102,7 +102,7 @@ jobs:
       
       - name: Run ${{ matrix.scenario.name }} tests
         run: pytest -v -m "${{ matrix.scenario.marker }}"
-        
+
   deploy:
     name: Deploy to Production
     needs: [lint, test]
